@@ -194,7 +194,7 @@ def _sync_ddp(result: Tensor, group: Optional[Any] = None, reduce_op: Optional[U
     op: Optional[ReduceOp]
     if isinstance(reduce_op, str):
         reduce_op = "avg" if reduce_op == "mean" else reduce_op
-        if reduce_op.lower() == "avg" and torch.distributed.get_backend(group) == "gloo":
+        if reduce_op.lower() == "avg" and torch.distributed.get_backend(group) in ["gloo", "hccl"]:
             # The GLOO backend does not support the `ReduceOp.AVG` operation
             op = ReduceOp.SUM  # type: ignore[assignment]
             divide_by_world_size = True
